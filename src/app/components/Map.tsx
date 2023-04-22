@@ -2,21 +2,19 @@
 
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Data from "../interfaces/Data";
 import jsonToGeoJson from "../utils/jsonToGeoJson";
 import pointToLayer from "../utils/pointToLayer";
-import onEachFeature from "../utils/onEachFeature";
 import Table from "./Table";
 import Chart from "./Chart";
-import { Point } from "leaflet";
 
 function Map(props: { data: Data[] }) {
     const geoJson = jsonToGeoJson(props.data);
 
     const [year, setYear] = useState("");
     const [isTableShown, setIsTableShown] = useState(false);
-    const [isChartShown, setIsChartShown] = useState(true);
+    const [isChartShown, setIsChartShown] = useState(false);
     const [dataToBeShown, setDataToBeShown] = useState<Data[]>([]);
     const [seletedLocation, setSelectedLocation] = useState<any>({ type: "Point", coordinates: [0, 0] });
 
@@ -79,7 +77,6 @@ function Map(props: { data: Data[] }) {
                     pointToLayer={pointToLayer}
                     onEachFeature={(feature, layer) => {
                         layer.addEventListener("click", () => {
-                            console.log("hohoho", feature.geometry);
                             setSelectedLocation(feature.geometry);
                         });
                         layer.bindTooltip(
