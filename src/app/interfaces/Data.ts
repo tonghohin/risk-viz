@@ -5,5 +5,5 @@ export default interface Data {
     Long: number;
     "Risk Factors": string;
     "Risk Rating": number;
-    Year: string;
+    Year: "2030" | "2040" | "2050" | "2060" | "2070";
 }

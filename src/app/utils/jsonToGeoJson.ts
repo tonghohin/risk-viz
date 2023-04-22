@@ -1,5 +1,5 @@
 import Data from "../interfaces/Data";
-import { FeatureCollection, GeoJsonObject } from "geojson";
+import { FeatureCollection } from "geojson";
 
 export default function jsonToGeoJson(json: Data[]) {
     const geoJSON = json.map((obj) => {

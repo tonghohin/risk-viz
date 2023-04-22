@@ -11,7 +11,7 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
     }
 
     return (
-        <div className="flex h-96 overflow-auto border-slate-400 border-2 bg-slate-100 m-1 rounded">
+        <div className="flex-1 h-96 overflow-auto border-slate-400 border-2 bg-slate-100 m-1 rounded">
             <table className="text-sm h-96 w-full rounded">
                 <thead>
                     <tr className="bg-slate-300">
