@@ -2,7 +2,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 import Data from "../interfaces/Data";
-import { Geometry, Point, Position } from "geojson";
+import { Position } from "geojson";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -83,6 +83,7 @@ const labels = ["2030", "2040", "2050", "2060", "2070"];
 
 const chartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
         legend: {
             position: "top"
@@ -126,104 +127,110 @@ function Chart(props: { data: Data[]; seletedLocation: Position }) {
     }
 
     useEffect(() => {
-        if (filter === "Asset") {
-            const aggregatedDataMemo = props.data.reduce(
-                (result, obj) => {
-                    if (obj["Asset Name"] === option) {
-                        result[obj["Year"]].rating += obj["Risk Rating"];
-                        result[obj["Year"]].count++;
-                    }
-
-                    return result;
-                },
-                { 2030: { rating: 0, count: 0 }, 2040: { rating: 0, count: 0 }, 2050: { rating: 0, count: 0 }, 2060: { rating: 0, count: 0 }, 2070: { rating: 0, count: 0 } }
-            );
-
-            const aggregatedData: number[] = [];
-            for (const memo of Object.values(aggregatedDataMemo)) {
-                aggregatedData.push(memo.rating / memo.count);
-            }
-
-            setDataForChart((prevDataForChart) => {
-                return {
-                    ...prevDataForChart,
-                    datasets: [
-                        {
-                            ...prevDataForChart.datasets[0],
-                            label: `${filter}  - ${option}`,
-                            data: aggregatedData
+        (async () => {
+            if (filter === "Asset") {
+                const aggregatedDataMemo = props.data.reduce(
+                    (result, obj) => {
+                        if (obj["Asset Name"] === option) {
+                            result[obj["Year"]].rating += obj["Risk Rating"];
+                            result[obj["Year"]].count++;
                         }
-                    ]
-                };
-            });
-        }
-        if (filter === "Business Category") {
-            const aggregatedDataMemo = props.data.reduce(
-                (result, obj) => {
-                    if (obj["Business Category"] === option) {
-                        result[obj["Year"]].rating += obj["Risk Rating"];
-                        result[obj["Year"]].count++;
-                    }
 
-                    return result;
-                },
-                { 2030: { rating: 0, count: 0 }, 2040: { rating: 0, count: 0 }, 2050: { rating: 0, count: 0 }, 2060: { rating: 0, count: 0 }, 2070: { rating: 0, count: 0 } }
-            );
+                        return result;
+                    },
+                    { 2030: { rating: 0, count: 0 }, 2040: { rating: 0, count: 0 }, 2050: { rating: 0, count: 0 }, 2060: { rating: 0, count: 0 }, 2070: { rating: 0, count: 0 } }
+                );
 
-            const aggregatedData: number[] = [];
-            for (const memo of Object.values(aggregatedDataMemo)) {
-                aggregatedData.push(memo.rating / memo.count);
+                const aggregatedData: number[] = [];
+                for (const memo of Object.values(aggregatedDataMemo)) {
+                    aggregatedData.push(memo.rating / memo.count);
+                }
+
+                setDataForChart((prevDataForChart) => {
+                    return {
+                        ...prevDataForChart,
+                        datasets: [
+                            {
+                                ...prevDataForChart.datasets[0],
+                                label: `${filter}  - ${option}`,
+                                data: aggregatedData
+                            }
+                        ]
+                    };
+                });
             }
-
-            setDataForChart((prevDataForChart) => {
-                return {
-                    ...prevDataForChart,
-                    datasets: [
-                        {
-                            ...prevDataForChart.datasets[0],
-                            label: `${filter}  - ${option}`,
-                            data: aggregatedData
+            if (filter === "Business Category") {
+                const aggregatedDataMemo = props.data.reduce(
+                    (result, obj) => {
+                        if (obj["Business Category"] === option) {
+                            result[obj["Year"]].rating += obj["Risk Rating"];
+                            result[obj["Year"]].count++;
                         }
-                    ]
-                };
-            });
-        }
-        if (filter === "Location") {
-            const aggregatedDataMemo = props.data.reduce(
-                (result, obj) => {
-                    if (obj.Lat === props.seletedLocation[1] && obj.Long === props.seletedLocation[0]) {
-                        result[obj["Year"]].rating += obj["Risk Rating"];
-                        result[obj["Year"]].count++;
-                    }
 
-                    return result;
-                },
-                { 2030: { rating: 0, count: 0 }, 2040: { rating: 0, count: 0 }, 2050: { rating: 0, count: 0 }, 2060: { rating: 0, count: 0 }, 2070: { rating: 0, count: 0 } }
-            );
+                        return result;
+                    },
+                    { 2030: { rating: 0, count: 0 }, 2040: { rating: 0, count: 0 }, 2050: { rating: 0, count: 0 }, 2060: { rating: 0, count: 0 }, 2070: { rating: 0, count: 0 } }
+                );
 
-            const aggregatedData: number[] = [];
-            for (const memo of Object.values(aggregatedDataMemo)) {
-                aggregatedData.push(memo.rating / memo.count);
+                const aggregatedData: number[] = [];
+                for (const memo of Object.values(aggregatedDataMemo)) {
+                    aggregatedData.push(memo.rating / memo.count);
+                }
+
+                setDataForChart((prevDataForChart) => {
+                    return {
+                        ...prevDataForChart,
+                        datasets: [
+                            {
+                                ...prevDataForChart.datasets[0],
+                                label: `${filter}  - ${option}`,
+                                data: aggregatedData
+                            }
+                        ]
+                    };
+                });
             }
+            if (filter === "Location") {
+                const res = await fetch(`http://api.positionstack.com/v1/reverse?access_key=${process.env.API_KEY}&query=${props.seletedLocation[1]},${props.seletedLocation[0]}&limit=1`);
+                const data = await res.json();
+                const address = data.data[0].label;
 
-            setDataForChart((prevDataForChart) => {
-                return {
-                    ...prevDataForChart,
-                    datasets: [
-                        {
-                            ...prevDataForChart.datasets[0],
-                            label: `${filter}  - ${props.seletedLocation[0]}, ${props.seletedLocation[1]}`,
-                            data: aggregatedData
+                const aggregatedDataMemo = props.data.reduce(
+                    (result, obj) => {
+                        if (obj.Lat === props.seletedLocation[1] && obj.Long === props.seletedLocation[0]) {
+                            result[obj["Year"]].rating += obj["Risk Rating"];
+                            result[obj["Year"]].count++;
                         }
-                    ]
-                };
-            });
-        }
+
+                        return result;
+                    },
+                    { 2030: { rating: 0, count: 0 }, 2040: { rating: 0, count: 0 }, 2050: { rating: 0, count: 0 }, 2060: { rating: 0, count: 0 }, 2070: { rating: 0, count: 0 } }
+                );
+
+                const aggregatedData: number[] = [];
+                for (const memo of Object.values(aggregatedDataMemo)) {
+                    aggregatedData.push(memo.rating / memo.count);
+                }
+
+                setDataForChart((prevDataForChart) => {
+                    return {
+                        ...prevDataForChart,
+                        datasets: [
+                            {
+                                ...prevDataForChart.datasets[0],
+                                label: `${filter}  - ${address || `${props.seletedLocation[0]}, ${props.seletedLocation[1]}`}`,
+                                data: aggregatedData
+                            }
+                        ]
+                    };
+                });
+            }
+        })();
     }, [option, props.seletedLocation]);
 
     return (
-        <div className="flex-auto flex flex-col justify-between max-w-[80vw] max-h-96 overflow-auto bg-sky-50 rounded resize p-2 opacity-90 shadow-md shadow-gray-700">
-            <nav className="p-2 flex flex-wrap items-center gap-2">
+        <div className="grow shrink basis-full flex flex-col justify-between max-w-[80vw] h-96 overflow-auto bg-sky-50 rounded resize p-2 opacity-90 shadow-md shadow-gray-700 text-sm">
+            <nav className="p-2 flex flex-wrap items-center gap-2 w-full">
                 <select className="appearance-none bg-sky-300 rounded w-40 p-1" onChange={handleFilterChange} value={filter}>
                     <option value="" disabled={true}>
                         Choose a Filter
@@ -272,7 +279,7 @@ function Chart(props: { data: Data[]; seletedLocation: Position }) {
                     </div>
                 )}
             </nav>
-            <div className="flex-1 w-full">
+            <div className="w-full min-h-[250px] relative flex-auto">
                 <Line options={chartOptions} data={dataForChart} />
             </div>
         </div>

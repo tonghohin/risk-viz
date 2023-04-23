@@ -11,8 +11,8 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
     }
 
     return (
-        <div className="flex-auto max-w-[80vw] max-h-96 overflow-auto bg-white rounded resize opacity-90 shadow-md shadow-gray-700">
-            <table className="text-sm h-96 w-full rounded">
+        <div className="grow shrink basis-full max-w-[80vw] max-h-96 overflow-auto bg-white rounded resize opacity-90 shadow-md shadow-gray-700">
+            <table className="text-sm min-h-[250px] h-auto w-full rounded">
                 <thead>
                     <tr className="bg-gray-300">
                         <th className="border-gray-400 border-b border-r p-0.5" onClick={props.handleSort}>

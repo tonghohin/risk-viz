@@ -45,9 +45,9 @@ function Map(props: { data: Data[] }) {
 
     return (
         <main className="h-screen w-screen">
-            <nav className="flex flex-col gap-5 fixed w-fit z-[2000] top-[12px] left-[60px]">
+            <nav className="h-screen flex flex-col gap-5 py-[12px] fixed w-fit z-[2000] left-[60px]">
                 <div className="flex flex-wrap gap-5">
-                    <select className="appearance-none bg-white rounded w-fit p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
+                    <select className="appearance-none bg-white rounded w-28 p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
                         <option value="" disabled={true}>
                             Select a year
                         </option>
@@ -58,16 +58,15 @@ function Map(props: { data: Data[] }) {
                         <option value="2070">2070</option>
                     </select>
                     <div className="flex gap-5">
-                        <button className="bg-white hover:bg-gray-100 p-1 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowTableButtonClick}>
+                        <button className="bg-white hover:bg-gray-100 p-1 w-28 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowTableButtonClick}>
                             {isTableShown ? "Hide Table" : "Show Table"}
                         </button>
-                        <button className="bg-white hover:bg-gray-100 p-1 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowChartButtonClick}>
+                        <button className="bg-white hover:bg-gray-100 p-1 w-28 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowChartButtonClick}>
                             {isChartShown ? "Hide Chart" : "Show Chart"}
                         </button>
                     </div>
                 </div>
-
-                <section className="grid grid-rows-2 gap-5 w-[80vw] sm:grid-cols-2 sm:grid-rows-none">
+                <section className="flex flex-col gap-5 max-w-[80vw] sm:flex-row overflow-auto">
                     {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
                     {isChartShown && <Chart data={props.data} seletedLocation={seletedLocation} />}
                 </section>
