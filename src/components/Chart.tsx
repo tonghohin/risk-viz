@@ -191,7 +191,7 @@ function Chart(props: { data: Data[]; seletedLocation: Position }) {
                 });
             }
             if (filter === "Location") {
-                const res = await fetch(`http://api.positionstack.com/v1/reverse?access_key=${process.env.API_KEY}&query=${props.seletedLocation[1]},${props.seletedLocation[0]}&limit=1`);
+                const res = await fetch(`https://api.positionstack.com/v1/reverse?access_key=${process.env.API_KEY}&query=${props.seletedLocation[1]},${props.seletedLocation[0]}&limit=1`);
                 const data = await res.json();
                 const address = data.data[0].label;
 
