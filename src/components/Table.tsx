@@ -52,10 +52,12 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
                 <tbody>
                     {props.data.length === 0 ? (
                         <tr>
-                            <td colSpan={6}>Please select a year first</td>
+                            <td colSpan={6} className="align-top">
+                                Please select a year first
+                            </td>
                         </tr>
                     ) : filteredData.length === 0 ? (
-                        <tr className="text-center">
+                        <tr className="align-top">
                             <td colSpan={6}>No matched data</td>
                         </tr>
                     ) : (

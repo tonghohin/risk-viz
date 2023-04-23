@@ -19,6 +19,8 @@ See it in action at https://risk-viz.vercel.app/
 -   Chart.js
 -   Tailwind.css
 -   Vercel
+-   Jest
+-   React Testing Library
 
 ## Contact
 
