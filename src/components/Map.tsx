@@ -17,7 +17,7 @@ function Map(props: { data: Data[] }) {
     const [isTableShown, setIsTableShown] = useState(false);
     const [isChartShown, setIsChartShown] = useState(false);
     const [dataToBeShown, setDataToBeShown] = useState<Data[]>([]);
-    const [seletedLocation, setSelectedLocation] = useState<Position>([0, 0]);
+    const [selectedLocation, setSelectedLocation] = useState<Position>([0, 0]);
 
     function handleYearChange(e: React.ChangeEvent<HTMLSelectElement>) {
         setYear(e.target.value);
@@ -68,7 +68,7 @@ function Map(props: { data: Data[] }) {
                 </div>
                 <section className="flex flex-col gap-5 max-w-[80vw] sm:flex-row overflow-auto">
                     {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
-                    {isChartShown && <Chart data={props.data} seletedLocation={seletedLocation} />}
+                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} />}
                 </section>
             </nav>
 
