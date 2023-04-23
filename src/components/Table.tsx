@@ -49,18 +49,24 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
                     </tr>
                 </thead>
                 <tbody>
-                    {props.data
-                        .filter((obj) => obj["Risk Factors"].match(regExp) !== null)
-                        .map((obj, i) => (
-                            <tr key={i} className="hover:bg-gray-200">
-                                <td className="border-gray-300 border">{i + 1}</td>
-                                <td className="border-gray-300 border">{obj["Asset Name"]}</td>
-                                <td className="border-gray-300 border">{obj["Business Category"]}</td>
-                                <td className="border-gray-300 border">{obj["Risk Rating"]}</td>
-                                <td className="border-gray-300 border">{obj["Risk Factors"]}</td>
-                                <td className="border-gray-300 border">{obj["Year"]}</td>
-                            </tr>
-                        ))}
+                    {props.data.length === 0 ? (
+                        <tr className="text-center">
+                            <td>No matched data</td>
+                        </tr>
+                    ) : (
+                        props.data
+                            .filter((obj) => obj["Risk Factors"].match(regExp) !== null)
+                            .map((obj, i) => (
+                                <tr key={i} className="hover:bg-gray-200">
+                                    <td className="border-gray-300 border">{i + 1}</td>
+                                    <td className="border-gray-300 border">{obj["Asset Name"]}</td>
+                                    <td className="border-gray-300 border">{obj["Business Category"]}</td>
+                                    <td className="border-gray-300 border">{obj["Risk Rating"]}</td>
+                                    <td className="border-gray-300 border">{obj["Risk Factors"]}</td>
+                                    <td className="border-gray-300 border">{obj["Year"]}</td>
+                                </tr>
+                            ))
+                    )}
                 </tbody>
             </table>
         </div>
