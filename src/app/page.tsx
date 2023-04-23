@@ -1,7 +1,7 @@
 import fs from "fs";
 import { parse } from "csv-parse";
 import dynamic from "next/dynamic";
-import Data from "./interfaces/Data";
+import Data from "../interfaces/Data";
 
 export default async function Home() {
     const data = await getDataFromCSV();

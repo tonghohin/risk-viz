@@ -1,7 +1,8 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartData, ChartOptions } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
-import Data from "../app/interfaces/Data";
+import Data from "../interfaces/Data";
+import { Geometry, Point, Position } from "geojson";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -100,7 +101,7 @@ const chartOptions: ChartOptions = {
     }
 };
 
-function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordinates: [number, number] } }) {
+function Chart(props: { data: Data[]; seletedLocation: Position }) {
     const [filter, setFilter] = useState("");
     const [option, setOption] = useState("");
     const [dataForChart, setDataForChart] = useState<ChartData<"line">>({
@@ -190,7 +191,7 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
         if (filter === "Location") {
             const aggregatedDataMemo = props.data.reduce(
                 (result, obj) => {
-                    if (obj.Lat === props.seletedLocation.coordinates[1] && obj.Long === props.seletedLocation.coordinates[0]) {
+                    if (obj.Lat === props.seletedLocation[1] && obj.Long === props.seletedLocation[0]) {
                         result[obj["Year"]].rating += obj["Risk Rating"];
                         result[obj["Year"]].count++;
                     }
@@ -211,7 +212,7 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
                     datasets: [
                         {
                             ...prevDataForChart.datasets[0],
-                            label: `${filter}  - ${props.seletedLocation.coordinates[0]}, ${props.seletedLocation.coordinates[1]}`,
+                            label: `${filter}  - ${props.seletedLocation[0]}, ${props.seletedLocation[1]}`,
                             data: aggregatedData
                         }
                     ]
@@ -221,9 +222,9 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
     }, [option, props.seletedLocation]);
 
     return (
-        <div className="flex-1 w-[50vw] flex flex-col justify-between h-96 overflow-auto border-sky-400 border-2 bg-sky-50 rounded resize p-2 opacity-90 shadow-2xl">
-            <nav className="p-2 flex flex-wrap items-center gap-x-5">
-                <select className="appearance-none bg-sky-300 rounded w-40 p-0.5" onChange={handleFilterChange} value={filter}>
+        <div className="flex-auto flex flex-col justify-between max-w-[80vw] max-h-96 overflow-auto bg-sky-50 rounded resize p-2 opacity-90 shadow-md shadow-gray-700">
+            <nav className="p-2 flex flex-wrap items-center gap-2">
+                <select className="appearance-none bg-sky-300 rounded w-40 p-1" onChange={handleFilterChange} value={filter}>
                     <option value="" disabled={true}>
                         Choose a Filter
                     </option>
@@ -234,10 +235,9 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
 
                 {filter === "Asset" && (
                     <div className="flex items-center gap-2">
-                        <label htmlFor="Asset Name">Asset:</label>
-                        <select name="Asset Name" className="appearance-none bg-sky-300 rounded w-fit p-0.5" onChange={handleOptionChange} value={option}>
-                            <option value="" disabled hidden>
-                                -
+                        <select name="Asset Name" className="appearance-none bg-sky-300 rounded w-fit p-1" onChange={handleOptionChange} value={option}>
+                            <option value="" disabled>
+                                Choose an Asset
                             </option>
                             {ASSET_NAMES.map((asset, i) => (
                                 <option key={i} value={asset}>
@@ -250,10 +250,9 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
 
                 {filter === "Business Category" && (
                     <div className="flex items-center gap-2">
-                        <label htmlFor="Business Category">Business Category:</label>
-                        <select name="Business Category" className="appearance-none bg-sky-300 rounded w-fit p-0.5" onChange={handleOptionChange} value={option}>
-                            <option value="" disabled hidden>
-                                -
+                        <select name="Business Category" className="appearance-none bg-sky-300 rounded w-fit p-1" onChange={handleOptionChange} value={option}>
+                            <option value="" disabled>
+                                Choose a Business Category
                             </option>
                             {BUSINESS_CATEGORIES.map((category, i) => (
                                 <option key={i} value={category}>
@@ -266,9 +265,9 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
 
                 {filter === "Location" && (
                     <div className="flex items-center gap-2">
-                        <p>Location (Choose from the map below): </p>
-                        <p className="appearance-none bg-sky-300 rounded w-fit p-0.5 whitespace-nowrap">
-                            {props.seletedLocation.coordinates[0]}, {props.seletedLocation.coordinates[1]}
+                        <p>Choose from the map</p>
+                        <p className="appearance-none bg-sky-300 rounded w-fit p-1 whitespace-nowrap">
+                            {props.seletedLocation[0]}, {props.seletedLocation[1]}
                         </p>
                     </div>
                 )}
