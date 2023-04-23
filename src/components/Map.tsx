@@ -45,7 +45,7 @@ function Map(props: { data: Data[] }) {
 
     return (
         <main className="h-screen w-screen">
-            <nav className="overflow-auto max-h-[calc(100vh-24px)] flex flex-col fixed w-fit z-[2000] top-[12px] left-[60px] border-red-500 border">
+            <nav className="overflow-auto max-h-[calc(100vh-24px)] flex flex-col fixed max-w-[calc(100vw-70px)] z-[2000] top-[12px] left-[60px]">
                 <div className="flex flex-wrap gap-2 mb-2">
                     <select className="appearance-none bg-white rounded w-28 p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
                         <option value="" disabled={true}>
@@ -58,10 +58,10 @@ function Map(props: { data: Data[] }) {
                         <option value="2070">2070</option>
                     </select>
                     <div className="flex gap-2">
-                        <button className="bg-white hover:bg-gray-100 p-1 w-28 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowTableButtonClick}>
+                        <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowTableButtonClick}>
                             {isTableShown ? "Hide Table" : "Show Table"}
                         </button>
-                        <button className="bg-white hover:bg-gray-100 p-1 w-28 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowChartButtonClick}>
+                        <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowChartButtonClick}>
                             {isChartShown ? "Hide Chart" : "Show Chart"}
                         </button>
                     </div>
