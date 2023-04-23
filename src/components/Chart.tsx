@@ -82,32 +82,35 @@ const ASSET_NAMES = [
 const BUSINESS_CATEGORIES = ["Energy", "Finance", "Healthcare", "Manufacturing", "Retail", "Technology"];
 const labels = ["2030", "2040", "2050", "2060", "2070"];
 
-const chartOptions: ChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: "top"
-        },
-        title: {
-            display: true,
-            text: "Risk Rating over time (Year)"
-        },
-        tooltip: {
-            callbacks: {
-                label: (context) => {
-                    return `${context.dataset.label} - Risk Rating: ${context.parsed.y.toFixed(2)}`;
-                }
-            },
-            padding: 3
-        }
-    }
-};
-
 function Chart(props: { data: Data[]; selectedLocation: Position }) {
+    const chartOptions: ChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: "top",
+                align: "start"
+            },
+            title: {
+                display: true,
+                text: "Risk Rating over time (Year)"
+            },
+            tooltip: {
+                callbacks: {
+                    label: (context) => {
+                        const data = context.raw as { highestRisk: { risk: string; rating: number } };
+                        console.log(context);
+
+                        return [context.dataset.label as string, `Risk Rating -  ${context.parsed.y.toFixed(2)}` as string, `Highest Risk - ${data.highestRisk.risk} (${data.highestRisk.rating})`];
+                    }
+                },
+                padding: 3
+            }
+        }
+    };
     const [filter, setFilter] = useState("");
     const [option, setOption] = useState("");
-    const [dataForChart, setDataForChart] = useState<ChartData<"line">>({
+    const [dataForChart, setDataForChart] = useState<ChartData<"line", { highestRisk: { risk: string; rating: number } }[]>>({
         labels,
         datasets: [
             {
@@ -131,6 +134,8 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
     useEffect(() => {
         (async () => {
             if (filter === "Asset Name" || filter === "Business Category") {
+                const dataForChart = aggregateData(props.data, option, filter);
+
                 setDataForChart((prevDataForChart) => {
                     return {
                         ...prevDataForChart,
@@ -138,7 +143,7 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                             {
                                 ...prevDataForChart.datasets[0],
                                 label: `${filter} - ${option}`,
-                                data: aggregateData(props.data, option, filter)
+                                data: dataForChart
                             }
                         ]
                     };
@@ -153,27 +158,31 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
 
                     if (address === undefined) throw new Error("Address not found");
 
+                    const dataForChart = aggregateData(props.data, option, filter, props.selectedLocation);
+
                     setDataForChart((prevDataForChart) => {
                         return {
                             ...prevDataForChart,
                             datasets: [
                                 {
                                     ...prevDataForChart.datasets[0],
-                                    label: `Location  - ${address}`,
-                                    data: aggregateData(props.data, option, filter, props.selectedLocation)
+                                    label: `Location - ${address}`,
+                                    data: dataForChart
                                 }
                             ]
                         };
                     });
                 } catch (error) {
+                    const dataForChart = aggregateData(props.data, option, filter, props.selectedLocation);
+
                     setDataForChart((prevDataForChart) => {
                         return {
                             ...prevDataForChart,
                             datasets: [
                                 {
                                     ...prevDataForChart.datasets[0],
-                                    label: `Location  -  ${props.selectedLocation[0]}, ${props.selectedLocation[1]}`,
-                                    data: aggregateData(props.data, option, filter, props.selectedLocation)
+                                    label: `Location - ${props.selectedLocation[0]}, ${props.selectedLocation[1]}`,
+                                    data: dataForChart
                                 }
                             ]
                         };

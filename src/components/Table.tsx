@@ -5,7 +5,7 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
     const [filterInput, setFilterInput] = useState("");
 
     const regExp = new RegExp(filterInput, "i");
-    const filteredData = props.data.filter((obj) => obj["Risk Factors"].match(regExp) !== null);
+    const filteredData = props.data.filter((obj) => JSON.stringify(obj["Risk Factors"]).match(regExp) !== null);
 
     function handleFilterInputChange(e: React.ChangeEvent<HTMLInputElement>) {
         setFilterInput(e.target.value);
@@ -67,7 +67,7 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
                                 <td className="border-gray-300 border">{obj["Asset Name"]}</td>
                                 <td className="border-gray-300 border">{obj["Business Category"]}</td>
                                 <td className="border-gray-300 border">{obj["Risk Rating"]}</td>
-                                <td className="border-gray-300 border">{obj["Risk Factors"]}</td>
+                                <td className="border-gray-300 border">{JSON.stringify(obj["Risk Factors"]).replace(/[{}"]/g, "")}</td>
                                 <td className="border-gray-300 border">{obj["Year"]}</td>
                             </tr>
                         ))
