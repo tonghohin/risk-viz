@@ -227,7 +227,7 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                 {filter === "Lat" && (
                     <div className="flex items-center gap-2">
                         <p>Choose from the map</p>
-                        <p className="appearance-none bg-sky-300 rounded w-fit p-1 whitespace-nowrap">
+                        <p className="appearance-none bg-gray-300 rounded w-fit p-1 whitespace-nowrap">
                             {props.selectedLocation[0]}, {props.selectedLocation[1]}
                         </p>
                     </div>
