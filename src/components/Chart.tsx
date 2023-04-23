@@ -99,7 +99,6 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                 callbacks: {
                     label: (context) => {
                         const data = context.raw as { highestRisk: { risk: string; rating: number } };
-                        console.log(context);
 
                         return [context.dataset.label as string, `Risk Rating -  ${context.parsed.y.toFixed(2)}` as string, `Highest Risk - ${data.highestRisk.risk} (${data.highestRisk.rating})`];
                     }

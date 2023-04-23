@@ -33,13 +33,14 @@ function Map(props: { data: Data[] }) {
         setSelectedLocation([0, 0]);
     }
 
-    function handleSort(e: React.BaseSyntheticEvent) {
-        if (e.target.innerText === "Asset Name") {
-            setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Asset Name"].localeCompare(b["Asset Name"]))]);
-        } else if (e.target.innerText === "Business Category") {
-            setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Business Category"].localeCompare(b["Business Category"]))]);
-        } else if (e.target.innerText === "Risk Rating") {
-            setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Risk Rating"] - b["Risk Rating"])]);
+    function handleSort(toggleSort: { "Asset Name": boolean; "Business Category": boolean; "Risk Rating": boolean }, columnToSort: "Asset Name" | "Business Category" | "Risk Rating") {
+        console.log("sort", toggleSort);
+        if (columnToSort === "Asset Name") {
+            toggleSort["Asset Name"] ? setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Asset Name"].localeCompare(b["Asset Name"]))]) : setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => b["Asset Name"].localeCompare(a["Asset Name"]))]);
+        } else if (columnToSort === "Business Category") {
+            toggleSort["Business Category"] ? setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Business Category"].localeCompare(b["Business Category"]))]) : setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => b["Business Category"].localeCompare(a["Business Category"]))]);
+        } else if (columnToSort === "Risk Rating") {
+            toggleSort["Risk Rating"] ? setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Risk Rating"] - b["Risk Rating"])]) : setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => b["Risk Rating"] - a["Risk Rating"])]);
         }
     }
 

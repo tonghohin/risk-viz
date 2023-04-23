@@ -1,8 +1,9 @@
 import Data from "../interfaces/Data";
 import { useState } from "react";
 
-function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) => void }) {
+function Table(props: { data: Data[]; handleSort: (toggleSort: { "Asset Name": boolean; "Business Category": boolean; "Risk Rating": boolean }, columnToSort: "Asset Name" | "Business Category" | "Risk Rating") => void }) {
     const [filterInput, setFilterInput] = useState("");
+    const [toggleSort, setToggleSort] = useState({ "Asset Name": true, "Business Category": true, "Risk Rating": true });
 
     const regExp = new RegExp(filterInput, "i");
     const filteredData = props.data.filter((obj) => JSON.stringify(obj["Risk Factors"]).match(regExp) !== null);
@@ -11,15 +12,23 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
         setFilterInput(e.target.value);
     }
 
+    function handleSortClick(e: React.BaseSyntheticEvent) {
+        const columnToSort: "Asset Name" | "Business Category" | "Risk Rating" = e.currentTarget.dataset.name;
+
+        setToggleSort((prevToggleSort) => {
+            return { ...prevToggleSort, [columnToSort]: !prevToggleSort[columnToSort] };
+        });
+
+        props.handleSort(toggleSort, columnToSort);
+    }
+
     return (
         <div className="grow shrink basis-full max-w-[80vw] max-h-96 overflow-auto bg-white rounded resize opacity-90 shadow-md shadow-gray-700">
             <table className="text-sm min-h-[250px] h-auto w-full rounded">
                 <thead>
                     <tr className="bg-gray-300">
-                        <th className="border-gray-400 border-b border-r p-0.5" onClick={props.handleSort}>
-                            No.
-                        </th>
-                        <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer" onClick={props.handleSort}>
+                        <th className="border-gray-400 border-b border-r p-0.5">No.</th>
+                        <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer" data-name="Asset Name" onClick={handleSortClick}>
                             <span className="flex items-center">
                                 Asset Name
                                 <svg className="w-5 h-5 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -27,7 +36,7 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
                                 </svg>
                             </span>
                         </th>
-                        <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer" onClick={props.handleSort}>
+                        <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer" data-name="Business Category" onClick={handleSortClick}>
                             <span className="flex items-center">
                                 Business Category
                                 <svg className="w-5 h-5 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -35,7 +44,7 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
                                 </svg>
                             </span>
                         </th>
-                        <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer" onClick={props.handleSort}>
+                        <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer" data-name="Risk Rating" onClick={handleSortClick}>
                             <span className="flex items-center">
                                 Risk Rating
                                 <svg className="w-5 h-5 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">

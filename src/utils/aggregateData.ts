@@ -34,16 +34,11 @@ export default function aggregateData(data: Data[], option: string, filter: keyo
         });
     }
 
-    // const aggregatedData = { aggregatedRiskRating: [] as number[], highestRisk: [] as { risk: string; rating: number }[] };
     const aggregatedData = [];
     for (const memo of Object.values(aggregatedDataMemo)) {
-        // aggregatedData.aggregatedRiskRating.push(memo.rating / memo.count);
-        // aggregatedData.highestRisk.push(memo.highestRisk);
-        // aggregatedData.push({ y: memo.rating / memo.count, highestRisk: memo.highestRisk });
         aggregatedData.push({ x: 1, y: memo.rating / memo.count, highestRisk: memo.highestRisk });
     }
 
-    console.log("---aggregatedData---", aggregatedData);
     return aggregatedData;
 }
 
