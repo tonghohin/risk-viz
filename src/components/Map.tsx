@@ -45,8 +45,8 @@ function Map(props: { data: Data[] }) {
 
     return (
         <main className="h-screen w-screen">
-            <nav className="h-screen flex flex-col gap-5 py-[12px] fixed w-fit z-[2000] left-[60px]">
-                <div className="flex flex-wrap gap-5">
+            <nav className="overflow-auto max-h-[calc(100vh-24px)] flex flex-col fixed w-fit z-[2000] top-[12px] left-[60px] border-red-500 border">
+                <div className="flex flex-wrap gap-2 mb-2">
                     <select className="appearance-none bg-white rounded w-28 p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
                         <option value="" disabled={true}>
                             Select a year
@@ -57,7 +57,7 @@ function Map(props: { data: Data[] }) {
                         <option value="2060">2060</option>
                         <option value="2070">2070</option>
                     </select>
-                    <div className="flex gap-5">
+                    <div className="flex gap-2">
                         <button className="bg-white hover:bg-gray-100 p-1 w-28 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowTableButtonClick}>
                             {isTableShown ? "Hide Table" : "Show Table"}
                         </button>
@@ -66,7 +66,7 @@ function Map(props: { data: Data[] }) {
                         </button>
                     </div>
                 </div>
-                <section className="flex flex-col gap-5 max-w-[80vw] sm:flex-row overflow-auto">
+                <section className="grid grid-row-2 gap-2 max-w-[80vw] sm:flex-row sm:flex overflow-auto">
                     {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
                     {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} />}
                 </section>

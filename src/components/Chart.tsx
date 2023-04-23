@@ -183,7 +183,7 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
     }, [option, props.selectedLocation]);
 
     return (
-        <div className="grow shrink basis-full flex flex-col justify-between max-w-[80vw] h-96 overflow-auto bg-sky-50 rounded resize p-2 opacity-90 shadow-md shadow-gray-700 text-sm">
+        <div className="grow shrink basis-full flex flex-col justify-between max-w-[80vw] max-h-96 overflow-auto bg-sky-50 rounded resize p-2 opacity-90 shadow-md shadow-gray-700 text-sm">
             <nav className="p-2 flex flex-wrap items-center gap-2 w-full">
                 <select className="appearance-none bg-sky-300 rounded w-40 p-1" onChange={handleFilterChange} value={filter}>
                     <option value="" disabled={true}>
@@ -233,7 +233,7 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                     </div>
                 )}
             </nav>
-            <div className="w-full min-h-[250px] relative flex-auto">
+            <div className="w-full min-h-[200px] relative flex-auto">
                 <Line options={chartOptions} data={dataForChart} />
             </div>
         </div>

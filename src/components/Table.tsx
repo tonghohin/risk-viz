@@ -5,6 +5,7 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
     const [filterInput, setFilterInput] = useState("");
 
     const regExp = new RegExp(filterInput, "i");
+    const filteredData = props.data.filter((obj) => obj["Risk Factors"].match(regExp) !== null);
 
     function handleFilterInputChange(e: React.ChangeEvent<HTMLInputElement>) {
         setFilterInput(e.target.value);
@@ -43,29 +44,31 @@ function Table(props: { data: Data[]; handleSort: (e: React.BaseSyntheticEvent) 
                             </span>
                         </th>
                         <th className="border-gray-400 border-b border-r hover:bg-gray-400 cursor-pointer">
-                            Risk Factors (Filter: <input type="text" name="filter" value={filterInput} onChange={handleFilterInputChange} />)
+                            Risk Factors (Filter: <input type="text" name="filter" className="font-medium" value={filterInput} onChange={handleFilterInputChange} />)
                         </th>
                         <th className="border-gray-400 border-b">Year</th>
                     </tr>
                 </thead>
                 <tbody>
                     {props.data.length === 0 ? (
+                        <tr>
+                            <td colSpan={6}>Please select a year first</td>
+                        </tr>
+                    ) : filteredData.length === 0 ? (
                         <tr className="text-center">
-                            <td>No matched data</td>
+                            <td colSpan={6}>No matched data</td>
                         </tr>
                     ) : (
-                        props.data
-                            .filter((obj) => obj["Risk Factors"].match(regExp) !== null)
-                            .map((obj, i) => (
-                                <tr key={i} className="hover:bg-gray-200">
-                                    <td className="border-gray-300 border">{i + 1}</td>
-                                    <td className="border-gray-300 border">{obj["Asset Name"]}</td>
-                                    <td className="border-gray-300 border">{obj["Business Category"]}</td>
-                                    <td className="border-gray-300 border">{obj["Risk Rating"]}</td>
-                                    <td className="border-gray-300 border">{obj["Risk Factors"]}</td>
-                                    <td className="border-gray-300 border">{obj["Year"]}</td>
-                                </tr>
-                            ))
+                        filteredData.map((obj, i) => (
+                            <tr key={i} className="hover:bg-gray-200">
+                                <td className="border-gray-300 border">{i + 1}</td>
+                                <td className="border-gray-300 border">{obj["Asset Name"]}</td>
+                                <td className="border-gray-300 border">{obj["Business Category"]}</td>
+                                <td className="border-gray-300 border">{obj["Risk Rating"]}</td>
+                                <td className="border-gray-300 border">{obj["Risk Factors"]}</td>
+                                <td className="border-gray-300 border">{obj["Year"]}</td>
+                            </tr>
+                        ))
                     )}
                 </tbody>
             </table>
