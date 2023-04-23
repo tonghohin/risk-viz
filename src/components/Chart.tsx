@@ -148,7 +148,6 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                 try {
                     const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${props.selectedLocation[1]},${props.selectedLocation[0]}&key=${process.env.API_KEY}`);
                     const data = await res.json();
-                    console.log("dastsa", data);
                     const address = data.results[0].formatted_address;
 
                     if (address === undefined) throw new Error("Address not found");

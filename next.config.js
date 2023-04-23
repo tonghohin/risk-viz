@@ -4,7 +4,7 @@ const nextConfig = {
         appDir: true
     },
     env: {
-        API_KEY: "AIzaSyAUyGW6iwoCvMeiwim5p8tRnVoZAJiUa0M"
+        API_KEY: process.env.API_KEY
     }
 };
 
