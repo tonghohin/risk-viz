@@ -98,7 +98,8 @@ const chartOptions: ChartOptions = {
                 label: (context) => {
                     return `${context.dataset.label} - Risk Rating: ${context.parsed.y.toFixed(2)}`;
                 }
-            }
+            },
+            padding: 3
         }
     }
 };
@@ -158,7 +159,7 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                             datasets: [
                                 {
                                     ...prevDataForChart.datasets[0],
-                                    label: `${filter}  - ${address}`,
+                                    label: `Location  - ${address}`,
                                     data: aggregateData(props.data, option, filter, props.selectedLocation)
                                 }
                             ]
@@ -171,7 +172,7 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
                             datasets: [
                                 {
                                     ...prevDataForChart.datasets[0],
-                                    label: `${filter}  -  ${props.selectedLocation[0]}, ${props.selectedLocation[1]}`,
+                                    label: `Location  -  ${props.selectedLocation[0]}, ${props.selectedLocation[1]}`,
                                     data: aggregateData(props.data, option, filter, props.selectedLocation)
                                 }
                             ]
