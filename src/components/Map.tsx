@@ -2,10 +2,10 @@
 
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
-import Data from "../interfaces/Data";
-import jsonToGeoJson from "../utils/jsonToGeoJson";
-import pointToLayer from "../utils/pointToLayer";
+import { useState } from "react";
+import Data from "../app/interfaces/Data";
+import jsonToGeoJson from "../app/utils/jsonToGeoJson";
+import pointToLayer from "../app/utils/pointToLayer";
 import Table from "./Table";
 import Chart from "./Chart";
 
@@ -42,12 +42,11 @@ function Map(props: { data: Data[] }) {
     }
 
     return (
-        <main className="h-screen w-screen flex flex-col">
-            <nav className="bg-slate-400 p-2 flex items-center gap-5 border-slate-200 rounded-lg m-1">
-                <label htmlFor="year">Select a year</label>
-                <select name="year" className="appearance-none bg-slate-300 rounded w-40 p-0.5" onChange={handleYearChange} value={year}>
-                    <option value="" disabled hidden>
-                        -
+        <main className="h-screen w-screen">
+            <nav className="flex items-center gap-5 fixed w-full z-[2000] top-[12px] left-[60px]">
+                <select className="appearance-none bg-white rounded w-40 p-0.5 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
+                    <option value="" disabled={true}>
+                        Select a year
                     </option>
                     <option value="2030">2030</option>
                     <option value="2040">2040</option>
@@ -55,20 +54,20 @@ function Map(props: { data: Data[] }) {
                     <option value="2060">2060</option>
                     <option value="2070">2070</option>
                 </select>
-                <button className="bg-slate-200 hover:bg-slate-300 p-0.5 px-2 rounded" onClick={handleShowTableButtonClick}>
+                <button className="bg-white hover:bg-gray-100 p-0.5 px-2 rounded-lg shadow-md shadow-gray-700" onClick={handleShowTableButtonClick}>
                     {isTableShown ? "Hide Table" : "Show Table"}
                 </button>
-                <button className="bg-slate-200 hover:bg-slate-300 p-0.5 px-2 rounded" onClick={handleShowChartButtonClick}>
+                <button className="bg-white hover:bg-gray-100 p-0.5 px-2 rounded-lg shadow-md shadow-gray-700" onClick={handleShowChartButtonClick}>
                     {isChartShown ? "Hide Chart" : "Show Chart"}
                 </button>
+
+                <section className="flex absolute gap-5" style={{ zIndex: 100000, top: "40px", left: "0px", maxWidth: "90vw", maxHeight: "50vh" }}>
+                    {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
+                    {isChartShown && <Chart data={props.data} seletedLocation={seletedLocation} />}
+                </section>
             </nav>
 
-            <section className="flex">
-                {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
-                {isChartShown && <Chart data={props.data} seletedLocation={seletedLocation} />}
-            </section>
-
-            <MapContainer center={[43.65107, -79.347015]} zoom={3} className="h-screen w-full">
+            <MapContainer center={[43.65107, -79.347015]} zoom={3} className="h-screen w-screen">
                 <TileLayer url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" maxZoom={20} subdomains={["mt0", "mt1", "mt2", "mt3"]} />
                 <GeoJSON
                     key={year}

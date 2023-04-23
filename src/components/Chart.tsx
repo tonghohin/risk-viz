@@ -1,7 +1,7 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartData, ChartOptions } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
-import Data from "../interfaces/Data";
+import Data from "../app/interfaces/Data";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -82,7 +82,6 @@ const labels = ["2030", "2040", "2050", "2060", "2070"];
 
 const chartOptions: ChartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
     plugins: {
         legend: {
             position: "top"
@@ -222,12 +221,11 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
     }, [option, props.seletedLocation]);
 
     return (
-        <div className="flex-1 flex flex-col h-96 overflow-auto border-sky-400 border-2 bg-sky-50 m-1 rounded">
-            <nav className="bg-sky-400 p-2 h-9 flex items-center gap-5 border-sky-200 rounded-lg m-1 text-sm">
-                <label htmlFor="Asset Name">Choose a Filter</label>
-                <select name="Asset Name" className="appearance-none bg-sky-300 rounded w-40 p-0.5" onChange={handleFilterChange} value={filter}>
-                    <option value="" disabled hidden>
-                        -
+        <div className="flex-1 w-[50vw] flex flex-col justify-between h-96 overflow-auto border-sky-400 border-2 bg-sky-50 rounded resize p-2 opacity-90 shadow-2xl">
+            <nav className="p-2 flex flex-wrap items-center gap-x-5">
+                <select className="appearance-none bg-sky-300 rounded w-40 p-0.5" onChange={handleFilterChange} value={filter}>
+                    <option value="" disabled={true}>
+                        Choose a Filter
                     </option>
                     <option value="Asset">Asset</option>
                     <option value="Business Category">Business Category</option>
@@ -235,7 +233,7 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
                 </select>
 
                 {filter === "Asset" && (
-                    <>
+                    <div className="flex items-center gap-2">
                         <label htmlFor="Asset Name">Asset:</label>
                         <select name="Asset Name" className="appearance-none bg-sky-300 rounded w-fit p-0.5" onChange={handleOptionChange} value={option}>
                             <option value="" disabled hidden>
@@ -247,11 +245,11 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
                                 </option>
                             ))}
                         </select>
-                    </>
+                    </div>
                 )}
 
                 {filter === "Business Category" && (
-                    <>
+                    <div className="flex items-center gap-2">
                         <label htmlFor="Business Category">Business Category:</label>
                         <select name="Business Category" className="appearance-none bg-sky-300 rounded w-fit p-0.5" onChange={handleOptionChange} value={option}>
                             <option value="" disabled hidden>
@@ -263,19 +261,19 @@ function Chart(props: { data: Data[]; seletedLocation: { type: "Point"; coordina
                                 </option>
                             ))}
                         </select>
-                    </>
+                    </div>
                 )}
 
                 {filter === "Location" && (
-                    <>
-                        <span>Location (Choose from the map below): </span>
-                        <p className="appearance-none bg-sky-300 rounded w-40 p-0.5 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                        <p>Location (Choose from the map below): </p>
+                        <p className="appearance-none bg-sky-300 rounded w-fit p-0.5 whitespace-nowrap">
                             {props.seletedLocation.coordinates[0]}, {props.seletedLocation.coordinates[1]}
                         </p>
-                    </>
+                    </div>
                 )}
             </nav>
-            <div className="h-96 w-full">
+            <div className="flex-1 w-full">
                 <Line options={chartOptions} data={dataForChart} />
             </div>
         </div>

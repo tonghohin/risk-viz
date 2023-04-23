@@ -6,7 +6,7 @@ import Data from "./interfaces/Data";
 export default async function Home() {
     const data = await getDataFromCSV();
 
-    const Map = dynamic(() => import("./components/Map"), {
+    const Map = dynamic(() => import("../components/Map"), {
         loading: () => (
             <>
                 <p>A map is loading...</p>
