@@ -6,7 +6,7 @@ function Table(props: { data: Data[]; handleSort: (toggleSort: { "Asset Name": b
     const [toggleSort, setToggleSort] = useState({ "Asset Name": true, "Business Category": true, "Risk Rating": true });
 
     const regExp = new RegExp(filterInput, "i");
-    const filteredData = props.data.filter((obj) => JSON.stringify(obj["Risk Factors"]).match(regExp) !== null);
+    const filteredData = props.data.filter((obj) => JSON.stringify(obj["Risk Factors"]).replace(/[{}"]/g, "").match(regExp) !== null);
 
     function handleFilterInputChange(e: React.ChangeEvent<HTMLInputElement>) {
         setFilterInput(e.target.value);
