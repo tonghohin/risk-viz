@@ -1,4 +1,4 @@
-# Data Visualization Application
+# Risk Data Visualization Application
 
 This Data Visualization Application is a web-based tool that offers a powerful way to explore and analyze climate risk data. The application provides an interactive map, data table, and line graph that allow users to visualize and interact with the data.
 See it in action at https://risk-viz.vercel.app/
