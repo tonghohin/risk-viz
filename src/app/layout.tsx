@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata = {
     title: "Risk-Viz",
-    description: "Risk-Viz"
+    description: "Risk visualization application made by Hin Tong, for Riskthinking.ai."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
