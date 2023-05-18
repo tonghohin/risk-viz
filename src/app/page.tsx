@@ -37,7 +37,6 @@ async function getDataFromCSV() {
     });
 
     const cleanedRecords = records.map((record) => {
-        // record["Risk Factors"] = record["Risk Factors"].replace(/[{}"]/g, "");
         record["Risk Factors"] = JSON.parse(record["Risk Factors"] as string);
         record.Lat = Number(record.Lat);
         record.Long = Number(record.Long);

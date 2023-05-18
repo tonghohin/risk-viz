@@ -2,13 +2,14 @@
 
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Data from "../interfaces/Data";
 import jsonToGeoJson from "../utils/jsonToGeoJson";
 import pointToLayer from "../utils/pointToLayer";
 import Table from "./Table";
 import Chart from "./Chart";
 import { Position } from "geojson";
+import processPrompt from "@/utils/processPrompt";
 
 function Map(props: { data: Data[] }) {
     const geoJson = jsonToGeoJson(props.data);
@@ -18,10 +19,16 @@ function Map(props: { data: Data[] }) {
     const [isChartShown, setIsChartShown] = useState(false);
     const [dataToBeShown, setDataToBeShown] = useState<Data[]>([]);
     const [selectedLocation, setSelectedLocation] = useState<Position>([0, 0]);
+    const [prompt, setPrompt] = useState("");
+    const [promptResultForChart, setPromptResultForChart] = useState("");
+    const [promptErrorMessage, setPromptErrorMessage] = useState("");
+
+    useEffect(() => {
+        setDataToBeShown(props.data.filter((obj) => obj["Year"] === year));
+    }, [year]);
 
     function handleYearChange(e: React.ChangeEvent<HTMLSelectElement>) {
         setYear(e.target.value);
-        setDataToBeShown(props.data.filter((obj) => obj["Year"] === e.target.value));
     }
 
     function handleShowTableButtonClick() {
@@ -34,7 +41,6 @@ function Map(props: { data: Data[] }) {
     }
 
     function handleSort(toggleSort: { "Asset Name": boolean; "Business Category": boolean; "Risk Rating": boolean }, columnToSort: "Asset Name" | "Business Category" | "Risk Rating") {
-        console.log("sort", toggleSort);
         if (columnToSort === "Asset Name") {
             toggleSort["Asset Name"] ? setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => a["Asset Name"].localeCompare(b["Asset Name"]))]) : setDataToBeShown((prevDataToBeShown) => [...prevDataToBeShown.sort((a, b) => b["Asset Name"].localeCompare(a["Asset Name"]))]);
         } else if (columnToSort === "Business Category") {
@@ -44,10 +50,41 @@ function Map(props: { data: Data[] }) {
         }
     }
 
+    function handlePromptChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+        setPromptErrorMessage("");
+        setPrompt(e.target.value);
+    }
+
+    async function handlePromptSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setPrompt("");
+        setPromptErrorMessage("");
+
+        const result = await processPrompt(prompt);
+        const entities = result?.Entities;
+
+        if (entities?.length === 0) {
+            setPromptErrorMessage("Sorry, try please another prompt.");
+        }
+
+        console.log(entities);
+
+        entities?.forEach((entity) => {
+            if (entity.Type === "DATE" && entity.Text && ["2030", "2040", "2050", "2060", "2070"].includes(entity.Text)) {
+                setYear(entity.Text);
+            } else if ((entity.Type = "ORGANIZATION" && entity.Text)) {
+                setPromptResultForChart(entity.Text);
+                setIsChartShown(true);
+            } else {
+                setPromptErrorMessage("Sorry, please try another prompt.");
+            }
+        });
+    }
+
     return (
         <main className="h-screen w-screen">
-            <nav className="overflow-auto max-h-[calc(100vh-24px)] flex flex-col fixed max-w-[calc(100vw-70px)] z-[2000] top-[12px] left-[60px]">
-                <div className="flex flex-wrap gap-2 mb-2">
+            <nav className="overflow-auto max-h-[calc(100vh-24px)] gap-2 flex flex-col fixed max-w-[calc(100vw-70px)] z-[2000] top-[12px] left-[60px]">
+                <div className="flex flex-wrap gap-2">
                     <select className="appearance-none bg-white rounded w-28 p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
                         <option value="" disabled={true}>
                             Select a year
@@ -69,8 +106,15 @@ function Map(props: { data: Data[] }) {
                 </div>
                 <section className="grid grid-row-2 gap-2 max-w-[80vw] sm:flex-row sm:flex overflow-auto">
                     {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
-                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} />}
+                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} promptResultForChart={promptResultForChart} />}
                 </section>
+
+                <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>
+                    <label htmlFor="prompt">Try the new prompting feature!</label>
+                    <textarea name="prompt" placeholder="e.g. Show me the data for year 2040" value={prompt} onChange={handlePromptChange} className="bg-gray-200 p-1 w-full z-[2000] bottom-[12px] left-[60px] rounded resize-none" />
+                    <p className="text-red-600">{promptErrorMessage}</p>
+                    <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg whitespace-nowrap">Submit</button>
+                </form>
             </nav>
 
             <MapContainer center={[43.65107, -79.347015]} zoom={3} className="h-screen w-screen">

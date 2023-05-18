@@ -82,7 +82,7 @@ const ASSET_NAMES = [
 const BUSINESS_CATEGORIES = ["Energy", "Finance", "Healthcare", "Manufacturing", "Retail", "Technology"];
 const labels = ["2030", "2040", "2050", "2060", "2070"];
 
-function Chart(props: { data: Data[]; selectedLocation: Position }) {
+function Chart(props: { data: Data[]; selectedLocation: Position; promptResultForChart: string }) {
     const chartOptions: ChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -129,6 +129,28 @@ function Chart(props: { data: Data[]; selectedLocation: Position }) {
     function handleOptionChange(e: React.ChangeEvent<HTMLSelectElement>) {
         setOption(e.target.value);
     }
+
+    useEffect(() => {
+        if (ASSET_NAMES.some((asset) => asset.match(new RegExp(props.promptResultForChart, "i")) !== null)) {
+            setFilter("Asset Name");
+            setOption(props.promptResultForChart);
+
+            const dataForChart = aggregateData(props.data, props.promptResultForChart, "Asset Name");
+
+            setDataForChart((prevDataForChart) => {
+                return {
+                    ...prevDataForChart,
+                    datasets: [
+                        {
+                            ...prevDataForChart.datasets[0],
+                            label: `${filter} - ${option}`,
+                            data: dataForChart
+                        }
+                    ]
+                };
+            });
+        }
+    }, [props.promptResultForChart]);
 
     useEffect(() => {
         (async () => {
