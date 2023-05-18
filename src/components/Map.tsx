@@ -11,6 +11,7 @@ import Chart from "./Chart";
 import { Position } from "geojson";
 import processPrompt from "@/utils/processPrompt";
 import { ASSET_NAMES, labels } from "@/utils/data";
+import fuzzySearch from "@/utils/fuzzySearch";
 
 function Map(props: { data: Data[] }) {
     const geoJson = jsonToGeoJson(props.data);
@@ -64,22 +65,27 @@ function Map(props: { data: Data[] }) {
         const result = await processPrompt(prompt);
         const entities = result?.Entities;
 
-        if (entities?.length === 0) {
+        console.log("entities", entities);
+
+        if (entities?.length === 0 || entities === undefined) {
             setPromptErrorMessage("Sorry, try please another prompt.");
-        }
+        } else {
+            for (const entity of entities) {
+                if (entity.Text) {
+                    const searchAssets = fuzzySearch(ASSET_NAMES, entity.Text);
+                    const searchYear = fuzzySearch(labels, entity.Text);
 
-        console.log(entities);
-
-        entities?.forEach((entity) => {
-            if (entity.Type === "DATE" && entity.Text && labels.includes(entity.Text)) {
-                setYear(entity.Text);
-            } else if (entity.Type === "ORGANIZATION" && entity.Text && ASSET_NAMES.includes(entity.Text)) {
-                setPromptResultForChart(entity.Text);
-                setIsChartShown(true);
-            } else {
-                setPromptErrorMessage("Sorry, please try another prompt.");
+                    if (searchAssets) {
+                        setPromptResultForChart(searchAssets.item);
+                        setIsChartShown(true);
+                    } else if (searchYear) {
+                        setYear(searchYear.item);
+                    } else {
+                        setPromptErrorMessage("Sorry, please try another prompt.");
+                    }
+                }
             }
-        });
+        }
     }
 
     return (
@@ -111,7 +117,7 @@ function Map(props: { data: Data[] }) {
                 </section>
 
                 <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>
-                    <label htmlFor="prompt">Try the new prompting feature!</label>
+                    <label htmlFor="prompt">Try the new prompting feature! (Only available for Year and Assets right now)</label>
                     <textarea name="prompt" placeholder="e.g. Show me the data for year 2040" value={prompt} onChange={handlePromptChange} className="bg-gray-200 p-1 w-full z-[2000] bottom-[12px] left-[60px] rounded resize-none" />
                     <p className="text-red-600">{promptErrorMessage}</p>
                     <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg whitespace-nowrap">Submit</button>

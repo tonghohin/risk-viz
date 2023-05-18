@@ -23,7 +23,8 @@ See it in action at https://risk-viz.vercel.app/
 -   TypeScript
 -   Leaflet.js
 -   Google Maps API
--   AWS Comprehend API
+-   AWS Comprehend
+-   Fuse.js
 -   Chart.js
 -   Tailwind.css
 -   Vercel
