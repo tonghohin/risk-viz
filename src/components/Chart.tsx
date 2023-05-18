@@ -4,6 +4,14 @@ import { useEffect, useState } from "react";
 import Data from "../interfaces/Data";
 import { Position } from "geojson";
 import aggregateData from "@/utils/aggregateData";
+import { Dispatch, SetStateAction } from "react";
+
+interface Props {
+    data: Data[];
+    selectedLocation: Position;
+    promptResultForChart: string;
+    setPromptErrorMessage: Dispatch<SetStateAction<string>>;
+}
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -82,7 +90,7 @@ const ASSET_NAMES = [
 const BUSINESS_CATEGORIES = ["Energy", "Finance", "Healthcare", "Manufacturing", "Retail", "Technology"];
 const labels = ["2030", "2040", "2050", "2060", "2070"];
 
-function Chart(props: { data: Data[]; selectedLocation: Position; promptResultForChart: string }) {
+function Chart(props: Props) {
     const chartOptions: ChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -149,6 +157,8 @@ function Chart(props: { data: Data[]; selectedLocation: Position; promptResultFo
                     ]
                 };
             });
+        } else {
+            props.setPromptErrorMessage("Sorry, try please another prompt.");
         }
     }, [props.promptResultForChart]);
 

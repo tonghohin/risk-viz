@@ -1,7 +1,12 @@
 import Data from "../interfaces/Data";
 import { useState } from "react";
 
-function Table(props: { data: Data[]; handleSort: (toggleSort: { "Asset Name": boolean; "Business Category": boolean; "Risk Rating": boolean }, columnToSort: "Asset Name" | "Business Category" | "Risk Rating") => void }) {
+interface Props {
+    data: Data[];
+    handleSort: (toggleSort: { "Asset Name": boolean; "Business Category": boolean; "Risk Rating": boolean }, columnToSort: "Asset Name" | "Business Category" | "Risk Rating") => void;
+}
+
+function Table(props: Props) {
     const [filterInput, setFilterInput] = useState("");
     const [toggleSort, setToggleSort] = useState({ "Asset Name": true, "Business Category": true, "Risk Rating": true });
 

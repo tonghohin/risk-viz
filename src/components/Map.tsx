@@ -106,7 +106,7 @@ function Map(props: { data: Data[] }) {
                 </div>
                 <section className="grid grid-row-2 gap-2 max-w-[80vw] sm:flex-row sm:flex overflow-auto">
                     {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
-                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} promptResultForChart={promptResultForChart} />}
+                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} promptResultForChart={promptResultForChart} setPromptErrorMessage={setPromptErrorMessage} />}
                 </section>
 
                 <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>
