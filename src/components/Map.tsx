@@ -10,6 +10,7 @@ import Table from "./Table";
 import Chart from "./Chart";
 import { Position } from "geojson";
 import processPrompt from "@/utils/processPrompt";
+import { ASSET_NAMES, labels } from "@/utils/data";
 
 function Map(props: { data: Data[] }) {
     const geoJson = jsonToGeoJson(props.data);
@@ -70,9 +71,9 @@ function Map(props: { data: Data[] }) {
         console.log(entities);
 
         entities?.forEach((entity) => {
-            if (entity.Type === "DATE" && entity.Text && ["2030", "2040", "2050", "2060", "2070"].includes(entity.Text)) {
+            if (entity.Type === "DATE" && entity.Text && labels.includes(entity.Text)) {
                 setYear(entity.Text);
-            } else if ((entity.Type = "ORGANIZATION" && entity.Text)) {
+            } else if (entity.Type === "ORGANIZATION" && entity.Text && ASSET_NAMES.includes(entity.Text)) {
                 setPromptResultForChart(entity.Text);
                 setIsChartShown(true);
             } else {
@@ -106,7 +107,7 @@ function Map(props: { data: Data[] }) {
                 </div>
                 <section className="grid grid-row-2 gap-2 max-w-[80vw] sm:flex-row sm:flex overflow-auto">
                     {isTableShown && <Table data={dataToBeShown} handleSort={handleSort} />}
-                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} promptResultForChart={promptResultForChart} setPromptErrorMessage={setPromptErrorMessage} />}
+                    {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} promptResultForChart={promptResultForChart} />}
                 </section>
 
                 <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>

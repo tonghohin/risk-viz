@@ -5,90 +5,15 @@ import Data from "../interfaces/Data";
 import { Position } from "geojson";
 import aggregateData from "@/utils/aggregateData";
 import { Dispatch, SetStateAction } from "react";
+import { ASSET_NAMES, BUSINESS_CATEGORIES, labels } from "@/utils/data";
 
 interface Props {
     data: Data[];
     selectedLocation: Position;
     promptResultForChart: string;
-    setPromptErrorMessage: Dispatch<SetStateAction<string>>;
 }
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-const ASSET_NAMES = [
-    "Acevedo-Kennedy",
-    "Alvarez Inc",
-    "Anderson Group",
-    "Banks-Carlson",
-    "Bender, Warren and Sanchez",
-    "Campos and Sons",
-    "Clarke, Lutz and Farrell",
-    "Cook-Burns",
-    "Davis, Allen and Rivera",
-    "Duke Ltd",
-    "Flynn-Anderson",
-    "Foster-Flores",
-    "Fox, Daniel and Coleman",
-    "Good-Lewis",
-    "Grant-Coffey",
-    "Gray-Evans",
-    "Gross PLC",
-    "Guzman Ltd",
-    "Hall, Meadows and Anderson",
-    "Harrison, Meza and Rios",
-    "Higgins, Brown and Vaughn",
-    "Hooper, Evans and Merritt",
-    "Horne and Sons",
-    "Jimenez-Gallegos",
-    "Johnson and Sons",
-    "Jones Ltd",
-    "Kelley, Barnes and Hutchinson",
-    "Kemp-Anderson",
-    "Landry, Molina and Green",
-    "Marks, Garrett and Cummings",
-    "Martin-Jenkins",
-    "Mcknight, Beasley and Stewart",
-    "Mcpherson, Simmons and Simpson",
-    "Mejia, Roberts and Gay",
-    "Miller-Norris",
-    "Norton-Spencer",
-    "Obrien-Oneill",
-    "Park and Sons",
-    "Patel, Norris and Jackson",
-    "Patel-Brooks",
-    "Perez-Robertson",
-    "Pittman PLC",
-    "Reid PLC",
-    "Reid-Sherman",
-    "Rivera Inc",
-    "Roberts, Burke and Williams",
-    "Robertson-Petersen",
-    "Rodriguez, Roberts and Fuller",
-    "Skinner-Rojas",
-    "Smith-Woods",
-    "Stanton-Joyce",
-    "Stewart PLC",
-    "Strickland-Daniels",
-    "Sullivan-Curtis",
-    "Taylor, Mitchell and Ward",
-    "Thomas-Chavez",
-    "Thompson, Davis and Brown",
-    "Torres-Sanchez",
-    "Vega-Huffman",
-    "Wagner, Curry and Pearson",
-    "Walker, Hogan and Mendez",
-    "Waller Ltd",
-    "Ware PLC",
-    "Washington, Rogers and Morrison",
-    "Watson, Evans and Smith",
-    "Wiley Ltd",
-    "Wilkerson-Miranda",
-    "Williams Group",
-    "Willis-Newman",
-    "Zuniga Inc"
-];
-const BUSINESS_CATEGORIES = ["Energy", "Finance", "Healthcare", "Manufacturing", "Retail", "Technology"];
-const labels = ["2030", "2040", "2050", "2060", "2070"];
 
 function Chart(props: Props) {
     const chartOptions: ChartOptions = {
@@ -139,7 +64,7 @@ function Chart(props: Props) {
     }
 
     useEffect(() => {
-        if (ASSET_NAMES.some((asset) => asset.match(new RegExp(props.promptResultForChart, "i")) !== null)) {
+        if (props.promptResultForChart !== "") {
             setFilter("Asset Name");
             setOption(props.promptResultForChart);
 
@@ -157,8 +82,6 @@ function Chart(props: Props) {
                     ]
                 };
             });
-        } else {
-            props.setPromptErrorMessage("Sorry, try please another prompt.");
         }
     }, [props.promptResultForChart]);
 
