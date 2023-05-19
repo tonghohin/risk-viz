@@ -62,29 +62,34 @@ function Map(props: { data: Data[] }) {
         setPrompt("");
         setPromptErrorMessage("");
 
-        const result = await processPrompt(prompt);
-        const entities = result?.Entities;
+        try {
+            const result = await processPrompt(prompt);
+            const entities = result?.Entities;
 
-        console.log("entities", entities);
+            console.log("entities", entities);
 
-        if (entities?.length === 0 || entities === undefined) {
-            setPromptErrorMessage("Sorry, try please another prompt.");
-        } else {
-            for (const entity of entities) {
-                if (entity.Text) {
-                    const searchAssets = fuzzySearch(ASSET_NAMES, entity.Text);
-                    const searchYear = fuzzySearch(labels, entity.Text);
+            if (entities?.length === 0 || entities === undefined) {
+                throw Error("Unable to process prompt");
+            } else {
+                for (const entity of entities) {
+                    if (entity.Text) {
+                        const searchAssets = fuzzySearch(ASSET_NAMES, entity.Text);
+                        const searchYear = fuzzySearch(labels, entity.Text);
 
-                    if (searchAssets) {
-                        setPromptResultForChart(searchAssets.item);
-                        setIsChartShown(true);
-                    } else if (searchYear) {
-                        setYear(searchYear.item);
-                    } else {
-                        setPromptErrorMessage("Sorry, please try another prompt.");
+                        if (searchAssets) {
+                            setPromptResultForChart(searchAssets.item);
+                            setIsChartShown(true);
+                        } else if (searchYear) {
+                            setYear(searchYear.item);
+                        } else {
+                            throw Error("Unable to process prompt");
+                        }
                     }
                 }
             }
+        } catch (error) {
+            console.error((error as Error).message);
+            setPromptErrorMessage("Sorry, please try another prompt.");
         }
     }
 
@@ -118,7 +123,7 @@ function Map(props: { data: Data[] }) {
 
                 <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>
                     <label htmlFor="prompt">Try the new prompting feature! (Only available for Year and Assets right now)</label>
-                    <textarea name="prompt" placeholder="e.g. Show me the data for year 2040" value={prompt} onChange={handlePromptChange} className="bg-gray-200 p-1 w-full z-[2000] bottom-[12px] left-[60px] rounded resize-none" />
+                    <textarea id="prompt" placeholder="e.g. Show me the data for year 2040" value={prompt} onChange={handlePromptChange} className="bg-gray-200 p-1 w-full z-[2000] bottom-[12px] left-[60px] rounded resize-none" />
                     <p className="text-red-600">{promptErrorMessage}</p>
                     <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg whitespace-nowrap">Submit</button>
                 </form>
