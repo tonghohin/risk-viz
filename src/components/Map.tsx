@@ -1,17 +1,17 @@
 "use client";
 
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import { ASSET_NAMES, labels } from "@/utils/data";
+import fuzzySearch from "@/utils/fuzzySearch";
+import processPrompt from "@/utils/processPrompt";
+import { Position } from "geojson";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
+import { GeoJSON, MapContainer, TileLayer } from "react-leaflet";
 import Data from "../interfaces/Data";
 import jsonToGeoJson from "../utils/jsonToGeoJson";
 import pointToLayer from "../utils/pointToLayer";
-import Table from "./Table";
 import Chart from "./Chart";
-import { Position } from "geojson";
-import processPrompt from "@/utils/processPrompt";
-import { ASSET_NAMES, labels } from "@/utils/data";
-import fuzzySearch from "@/utils/fuzzySearch";
+import Table from "./Table";
 
 function Map(props: { data: Data[] }) {
     const geoJson = jsonToGeoJson(props.data);
@@ -121,12 +121,12 @@ function Map(props: { data: Data[] }) {
                     {isChartShown && <Chart data={props.data} selectedLocation={selectedLocation} promptResultForChart={promptResultForChart} />}
                 </section>
 
-                <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>
+                {/* <form className="bg-slate-300 p-1 rounded opacity-90 flex flex-col gap-2" onSubmit={handlePromptSubmit}>
                     <label htmlFor="prompt">Try the new prompting feature! (Only available for Year and Assets right now)</label>
                     <textarea id="prompt" placeholder="e.g. Show me the data for year 2040" value={prompt} onChange={handlePromptChange} className="bg-gray-200 p-1 w-full z-[2000] bottom-[12px] left-[60px] rounded resize-none" />
                     <p className="text-red-600">{promptErrorMessage}</p>
                     <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg whitespace-nowrap">Submit</button>
-                </form>
+                </form> */}
             </nav>
 
             <MapContainer center={[43.65107, -79.347015]} zoom={3} className="h-screen w-screen">
