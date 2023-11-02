@@ -33,4 +33,4 @@ See it in action at https://risk-viz.vercel.app/
 
 ## Contact
 
-https://tonghohin.cyclic.app
+https://tonghohin.vercel.app
