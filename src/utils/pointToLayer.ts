@@ -1,6 +1,5 @@
 import { Feature, Point } from "geojson";
-import { LatLng } from "leaflet";
-import L from "leaflet";
+import L, { LatLng } from "leaflet";
 
 export default function pointToLayer(feature: Feature<Point, any>, latlng: LatLng) {
     const GREEN_MARKER = L.icon({ iconUrl: "./icon-green.svg", iconSize: [40, 40], iconAnchor: [10, 25], popupAnchor: [0, 0] });

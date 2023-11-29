@@ -1,10 +1,8 @@
 "use client";
 
-import { ASSET_NAMES, labels } from "@/utils/data";
-import fuzzySearch from "@/utils/fuzzySearch";
-import processPrompt from "@/utils/processPrompt";
 import { Position } from "geojson";
 import "leaflet/dist/leaflet.css";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { GeoJSON, MapContainer, TileLayer } from "react-leaflet";
 import Data from "../interfaces/Data";
@@ -24,6 +22,7 @@ function Map(props: { data: Data[] }) {
     const [prompt, setPrompt] = useState("");
     const [promptResultForChart, setPromptResultForChart] = useState("");
     const [promptErrorMessage, setPromptErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setDataToBeShown(props.data.filter((obj) => obj["Year"] === year));
@@ -52,61 +51,63 @@ function Map(props: { data: Data[] }) {
         }
     }
 
-    function handlePromptChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        setPromptErrorMessage("");
-        setPrompt(e.target.value);
-    }
+    // function handlePromptChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    //     setPromptErrorMessage("");
+    //     setPrompt(e.target.value);
+    // }
 
-    async function handlePromptSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setPrompt("");
-        setPromptErrorMessage("");
+    // async function handlePromptSubmit(e: React.FormEvent<HTMLFormElement>) {
+    //     e.preventDefault();
+    //     setPrompt("");
+    //     setPromptErrorMessage("");
 
-        try {
-            const result = await processPrompt(prompt);
-            const entities = result?.Entities;
+    //     try {
+    //         const result = await processPrompt(prompt);
+    //         const entities = result?.Entities;
 
-            console.log("entities", entities);
+    //         if (entities?.length === 0 || entities === undefined) {
+    //             throw Error("Unable to process prompt");
+    //         } else {
+    //             for (const entity of entities) {
+    //                 if (entity.Text) {
+    //                     const searchAssets = fuzzySearch(ASSET_NAMES, entity.Text);
+    //                     const searchYear = fuzzySearch(labels, entity.Text);
 
-            if (entities?.length === 0 || entities === undefined) {
-                throw Error("Unable to process prompt");
-            } else {
-                for (const entity of entities) {
-                    if (entity.Text) {
-                        const searchAssets = fuzzySearch(ASSET_NAMES, entity.Text);
-                        const searchYear = fuzzySearch(labels, entity.Text);
-
-                        if (searchAssets) {
-                            setPromptResultForChart(searchAssets.item);
-                            setIsChartShown(true);
-                        } else if (searchYear) {
-                            setYear(searchYear.item);
-                        } else {
-                            throw Error("Unable to process prompt");
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error((error as Error).message);
-            setPromptErrorMessage("Sorry, please try another prompt.");
-        }
-    }
+    //                     if (searchAssets) {
+    //                         setPromptResultForChart(searchAssets.item);
+    //                         setIsChartShown(true);
+    //                     } else if (searchYear) {
+    //                         setYear(searchYear.item);
+    //                     } else {
+    //                         throw Error("Unable to process prompt");
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error((error as Error).message);
+    //         setPromptErrorMessage("Sorry, please try another prompt.");
+    //     }
+    // }
 
     return (
         <main className="h-screen w-screen">
             <nav className="overflow-auto max-h-[calc(100vh-24px)] gap-2 flex flex-col fixed max-w-[calc(100vw-70px)] z-[2000] top-[12px] left-[60px]">
                 <div className="flex flex-wrap gap-2">
-                    <select className="appearance-none bg-white rounded w-28 p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
-                        <option value="" disabled={true}>
-                            Select a year
-                        </option>
-                        <option value="2030">2030</option>
-                        <option value="2040">2040</option>
-                        <option value="2050">2050</option>
-                        <option value="2060">2060</option>
-                        <option value="2070">2070</option>
-                    </select>
+                    {isLoading ? (
+                        <Image src="/loading.svg" alt="loading" width={12} height={12} />
+                    ) : (
+                        <select className="appearance-none bg-white rounded w-28 p-1 shadow-md shadow-gray-700" onChange={handleYearChange} value={year}>
+                            <option value="" disabled={true}>
+                                Select a year
+                            </option>
+                            <option value="2030">2030</option>
+                            <option value="2040">2040</option>
+                            <option value="2050">2050</option>
+                            <option value="2060">2060</option>
+                            <option value="2070">2070</option>
+                        </select>
+                    )}
                     <div className="flex gap-2">
                         <button className="bg-white hover:bg-gray-100 p-1 w-24 rounded-lg shadow-md shadow-gray-700 whitespace-nowrap" onClick={handleShowTableButtonClick}>
                             {isTableShown ? "Hide Table" : "Show Table"}
@@ -148,6 +149,9 @@ function Map(props: { data: Data[] }) {
     <p>Year: <b>${feature.properties.year}</b></p>`,
                             { direction: "right", offset: [20, 0] }
                         );
+                    }}
+                    eventHandlers={{
+                        loading: () => console.log("loading")
                     }}
                 />
             </MapContainer>
